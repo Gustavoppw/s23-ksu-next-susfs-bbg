@@ -231,6 +231,40 @@ index 9fec3ef3..8a190993 100644
 +$(info -- Read: https://gitlab.com/simonpunk/susfs4ksu)
 +endif
  # Keep a new line here!! Because someone may append config
+@@ -66,20 +66,33 @@
+ KSU_NEXT_MANAGER_SIZE := 0x3e6
+ endif
+ 
++ifndef WKSU_MANAGER_SIZE
++WKSU_MANAGER_SIZE := 0x39b
++endif
++
+ ifndef KSU_NEXT_MANAGER_HASH
+ KSU_NEXT_MANAGER_HASH := 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+ endif
+ 
++ifndef WKSU_MANAGER_HASH
++WKSU_MANAGER_HASH := 593d4ce870c02468639efeef631e07ca4d852d63f154be56706229f9a5be0800
++endif
++
+ ifdef KSU_MANAGER_PACKAGE
+ ccflags-y += -DKSU_MANAGER_PACKAGE=\"$(KSU_MANAGER_PACKAGE)\"
+ $(info -- KernelSU-Next Manager package name: $(KSU_MANAGER_PACKAGE))
++$(info -- Wild KSU Manager package name: $(KSU_MANAGER_PACKAGE))
+ endif
+ 
+ $(info -- KernelSU-Next Manager signature size: $(KSU_NEXT_MANAGER_SIZE))
+ $(info -- KernelSU-Next Manager signature hash: $(KSU_NEXT_MANAGER_HASH))
++$(info -- Wild KSU Manager signature size: $(WKSU_MANAGER_SIZE))
++$(info -- Wild KSU Manager signature hash: $(WKSU_MANAGER_HASH))
+ 
+ ccflags-y += -DEXPECTED_MANAGER_SIZE=$(KSU_NEXT_MANAGER_SIZE)
+ ccflags-y += -DEXPECTED_MANAGER_HASH=\"$(KSU_NEXT_MANAGER_HASH)\"
++ccflags-y += -DEXPECTED_MANAGER_SIZE=$(WKSU_MANAGER_SIZE)
++ccflags-y += -DEXPECTED_MANAGER_HASH=\"$(WKSU_MANAGER_HASH)\"
+ 
+ ccflags-y += -DKSU_UMOUNT
+ 
 diff --git a/KernelSU-Next/kernel/allowlist.c b/KernelSU-Next/kernel/allowlist.c
 index 97455675..01020863 100644
 --- a/KernelSU-Next/kernel/allowlist.c
