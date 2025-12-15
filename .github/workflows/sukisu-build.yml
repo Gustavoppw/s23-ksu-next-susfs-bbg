@@ -38,12 +38,13 @@ jobs:
         run: |
           set -euxo pipefail
           cd kernel
+          
+          # Integrate the main SukiSU 
+          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s main
+
           # Determine the tag of the latest release of SukiSU
           echo "SUKISU_VERSION=$(curl -s "https://api.github.com/repos/SukiSU-Ultra/SukiSU-Ultra/tags" \
           | jq -r '.[0].name' | sed 's/^v//' | tr -d '.')" >> $GITHUB_ENV
-
-          # Integrate the main SukiSU 
-          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s main
                     
           # Compute version code = commit count + 10200 (same scheme as KernelSU CI)
           COMMITS="$(git -C "./KernelSU" rev-list --count HEAD || echo 0)"
@@ -81,10 +82,10 @@ jobs:
           sed -i '/config KPM/{:a; n; s/^\s*default n/default y/; ta;}' KernelSU/kernel/Kconfig
           
           # Adding BBG support
-          #wget -O- https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh | bash
-          #echo "CONFIG_BBG=y" >> ./arch/arm64/configs/gki_defconfig
-          #sed -i 's/\(CONFIG_LSM="[^"]*\)"/\1,baseband_guard"/' ./arch/arm64/configs/gki_defconfig
-          #sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/lockdown/lockdown,baseband_guard/ } }' ./security/Kconfig
+          wget -O- https://github.com/vc-teahouse/Baseband-guard/raw/main/setup.sh | bash
+          echo "CONFIG_BBG=y" >> ./arch/arm64/configs/gki_defconfig
+          sed -i 's/\(CONFIG_LSM="[^"]*\)"/\1,baseband_guard"/' ./arch/arm64/configs/gki_defconfig
+          sed -i '/^config LSM$/,/^help$/{ /^[[:space:]]*default/ { /baseband_guard/! s/lockdown/lockdown,baseband_guard/ } }' ./security/Kconfig
           
 
       - name: Set up swap space
