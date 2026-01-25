@@ -73,7 +73,7 @@ jobs:
           https://gitlab.com/simonpunk/susfs4ksu/-/raw/3c7ce6a308d93f33f06d528740eff0afcba31127/kernel_patches/include/linux/susfs_def.h
           fi
 
-          patch -p1 --fuzz=3 < "${GITHUB_WORKSPACE}/rezoss_next3_susfs2.patch"
+          #patch -p1 --fuzz=3 < "${GITHUB_WORKSPACE}/rezoss_next3_susfs2.patch"
           
           # Integrate manual hook 1.6
           curl -L -o manual-hook.patch https://github.com/SukiSU-Ultra/SukiSU_patch/raw/83aa64b7548890bb1f2eff6c990c03a1802df27b/hooks/scope_min_manual_hooks_v1.6.patch
