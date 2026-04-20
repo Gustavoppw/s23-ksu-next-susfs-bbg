@@ -48,30 +48,7 @@ jobs:
           COMMITS="$(git -C "./KernelSU-Next" rev-list --count HEAD || echo 0)"
           NEXT_VER_CODE=$((30000 + COMMITS))
           echo "NEXT_VER_CODE=$NEXT_VER_CODE" >> "$GITHUB_ENV"
-               
-          
-          # Integrate SUSFS 2.0.0
-          git clone -b gki-android13-5.15 https://gitlab.com/simonpunk/susfs4ksu.git
-      
-
-          # Determine susfs version
-          cd susfs4ksu
-          SUSFS_COMMIT=$(git rev-parse --short HEAD)
-          SUSFS_VERSION=$(sed -n 's/.*#define[[:space:]]\+SUSFS_VERSION[[:space:]]\+"v\{0,1\}\([0-9.]\+\)".*/\1/p' kernel_patches/include/linux/susfs.h | tr -d '.')
-          echo "SUSFS_VERSION=$SUSFS_VERSION" >> "$GITHUB_ENV"
-          echo "SUSFS_COMMIT=$SUSFS_COMMIT" >> "$GITHUB_ENV"
-          cd ..
-
-          # Begin susfs patching
-          cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
-          cp ./susfs4ksu/kernel_patches/50_add_susfs_in_gki-android13-5.15.patch ./
-          cp -rv ./susfs4ksu/kernel_patches/fs/* fs/
-          cp -rv ./susfs4ksu/kernel_patches/include/linux/* include/linux/
-          patch -p1 --fuzz=3 < ./50_add_susfs_in_gki-android13-5.15.patch
-          cd KernelSU-Next
-          patch -p1 --fuzz=3 < ./10_enable_susfs_for_ksu.patch
-          cd ..
-          
+              
           # Integrate manual hook 1.6
           curl -L -o manual-hook.patch https://github.com/SukiSU-Ultra/SukiSU_patch/raw/83aa64b7548890bb1f2eff6c990c03a1802df27b/hooks/scope_min_manual_hooks_v1.6.patch
           patch -p1 --fuzz=3 < manual-hook.patch
